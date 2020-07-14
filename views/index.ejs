@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <title>title</title>
+   </head>
+   <body class="container">
+      <h1 class="mt-5">Loc8 Exercise</h1>
+      <div class="form-group">
+      <p id="totvalue"></p>
+      <table id="table" class="table table-striped table-bordered" data-filter-control="true" data-show-search-clear-button="true">
+         <thead>
+            <tr class="titlerow">
+               <th scope="col">ID</th>
+               <th scope="col">Title</th>
+               <th scope="col" data-field="Parent ID" data-filter-control="input">Parent ID</th>
+               <th scope="col">Value</th>
+            </tr>
+         </thead>
+         <tbody>
+            <% csvList.forEach(function(csv) {%>
+            <tr>
+               <th scope="row"><%=csv.id%></th>
+               <td><%=csv.name%></td>
+               <td><%=csv.parent_id%></td>
+               <td><%=csv.value%></td>
+            </tr>
+            <% }) %>
+         </tbody>
+         <tfoot>
+            <tr>
+               <th colspan="3" style="text-align: right;">Total:</th>
+               <th></th>
+            </tr>
+         </tfoot>
+      </table>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      <script src= "https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+      <script src="https://cdn.datatables.net/plug-ins/1.10.21/api/sum().js"></script>
+      <script>
+
+         $(document).ready(function() {
+         // Setup - add a text input to each footer cell
+         $('#table thead tr').clone(true).appendTo( '#table thead' );
+         $('#table thead tr:eq(1) th').each( function (i) {
+         var title = $(this).text();
+         $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+         
+         $( 'input', this ).on( 'keyup change', function () {
+         if ( table.column(i).search() !== this.value ) {
+             table
+                 .column(i)
+                 .search( this.value )
+                 .draw();
+         }
+         } );
+         } );
+         } );
+
+         var table = $('#table').DataTable( {  
+          "search": {
+          "smart": false
+          }, 
+         orderCellsTop: true,
+         fixedHeader: true,
+
+         drawCallback: function () {
+         var api = this.api();
+         $( api.column(3).footer() ).html(
+         api.column(3, {page:'current'}).data().sum()
+         );
+         }
+         } );
+
+      </script>
+
+
+   </body>
+</html>
